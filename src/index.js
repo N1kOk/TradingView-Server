@@ -4,14 +4,14 @@ const app = express()
 const TradingView = require('./vendors/tradingview')
 
 app.get('/get-indicator-graphic', async (req, res) => {
-    const { indicatorId } = req.query
+    const { indicatorId, currency, timeframe, range } = req.query
     
     const client = new TradingView.Client()
     
     const chart = new client.Session.Chart()
-    chart.setMarket('BINANCE:BTCEUR', {
-        timeframe: '5',
-        range: 10000,
+    chart.setMarket(currency, {
+        timeframe,
+        range,
     })
     
     const indic = await TradingView.getIndicator(indicatorId)
