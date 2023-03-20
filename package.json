@@ -3,10 +3,10 @@
   "name": "tradingview-server",
   "scripts": {
     "dev": "nodemon ./src/index.js",
-    "prod": "node ./src/index.js"
+    "prod": "node ./src/index.js",
+    "postinstall": "cd ./src/vendors/tradingview && npm i"
   },
   "dependencies": {
-    "@mathieuc/tradingview": "^3.3.3",
     "express": "^4.18.2"
   },
   "devDependencies": {

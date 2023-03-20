@@ -1,39 +1,10 @@
 const express = require('express')
 const app = express()
 
-const TradingView = require('@mathieuc/tradingview');
+const TradingView = require('./vendors/tradingview')
 
-// global.TW_DEBUG = true;
-
-(async () => {
-    // const sessionId = '8zsscssfyw28ktu0a4kvo8msku42obr7'
-    //
-    // const client = new TradingView.Client({
-    //     token: sessionId,
-    // })
-    //
-    // const chart = new client.Session.Chart()
-    // // chart.setMarket('BINANCE:BTCEUR')
-    //
-    // chart.setMarket('BINANCE:BTCEUR', { // Set the market
-    //     timeframe: 'D',
-    // })
-    //
-    // chart.onError((...err) => { // Listen for errors (can avoid crash)
-    //     console.error('Chart error:', ...err)
-    //     // Do something...
-    // })
-    //
-    // chart.onSymbolLoaded(() => { // When the symbol is successfully loaded
-    //     console.log(`Market "${chart.infos.description}" loaded !`)
-    // })
-    //
-    // chart.onUpdate(() => { // When price changes
-    //     if (!chart.periods[0]) return
-    //     console.log(`[${chart.infos.description}]: ${chart.periods[0].close} ${chart.infos.currency_id}`)
-    //     // Do something...
-    // })
-    
+app.get('/get-indicator-graphic', async (req, res) => {
+    const { indicatorId } = req.query
     
     const client = new TradingView.Client()
     
@@ -43,43 +14,30 @@ const TradingView = require('@mathieuc/tradingview');
         range: 10000,
     })
     
-    TradingView.getIndicator('STD;Zig_Zag').then((indic) => {
-        const STD = new chart.Study(indic)
+    const indic = await TradingView.getIndicator(indicatorId)
+    
+    const STD = new chart.Study(indic)
+    
+    STD.onError((...err) => {
+        console.error('Study error:', ...err)
         
-        STD.onError((...err) => {
-            console.log('Study error:', ...err)
-        })
-        
-        STD.onReady(() => {
-            console.log(`STD '${STD.instance.description}' Loaded!`)
-        })
-        
-        STD.onUpdate(() => {
-            console.log('Graphic data:', STD.graphic)
-            // console.log('Tables:', changes, STD.graphic.tables);
-            // console.log('Cells', STD.graphic.tables[0].cells());
-            client.end()
+        res.json({
+            status: 'error',
+            error: err[0],
         })
     })
     
+    STD.onReady(() => {
+        console.log(`STD '${STD.instance.description}' Loaded!`)
+    })
     
-    // const indicators = await TradingView.getPrivateIndicators(sessionId)
-    // const indicators = await TradingView.searchIndicator(sessionId)
-    
-    // const indicator = new chart.Study(await indicators[0].get())
-    
-    // console.log(indicator)
-    
-    // indicator.onReady(() => {
-    //     console.log('Indicator loaded!')
-    // })
-    //
-    // indicator.onUpdate(() => {
-    //     console.log('Plot values', indicator.periods)
-    //     console.log('Strategy report', indicator.strategyReport)
-    // })
-})()
-
+    STD.onUpdate(() => {
+        console.log('Graphic data:', STD.graphic)
+        res.json(STD.graphic)
+        
+        client.end()
+    })
+})
 
 app.get('/get-session-id', async (req, res) => {
     const { login, pass } = req.query
@@ -104,9 +62,6 @@ app.get('/get-private-indicators', async (req, res) => {
     try {
         const indicators = await TradingView.getPrivateIndicators(sessionId)
         
-        const test = await indicators[0].get()
-        // console.log(test.script)
-        
         res.json(indicators)
     } catch (error) {
         console.error(error)
@@ -123,8 +78,6 @@ app.get('/search-indicator', async (req, res) => {
     
     try {
         const data = await TradingView.searchIndicator(indicator)
-        // const test = await data[0].get() // Еще какие-то данные
-        // console.log(test)
         
         res.json(data)
     } catch (error) {
@@ -141,4 +94,8 @@ const port = process.env.PORT || 80
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
+})
+
+process.on('uncaughtException', (err) => {
+    console.error(err.stack)
 })
