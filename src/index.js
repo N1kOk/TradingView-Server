@@ -4,9 +4,11 @@ const app = express()
 const TradingView = require('./vendors/tradingview')
 
 app.get('/get-indicator-graphic', async (req, res) => {
-    const { indicatorId, currency, timeframe, range } = req.query
+    const { sessionId, indicatorId, currency, timeframe, range } = req.query
     
-    const client = new TradingView.Client()
+    const client = new TradingView.Client({
+        token: sessionId
+    })
     
     const chart = new client.Session.Chart()
     chart.setMarket(currency, {
