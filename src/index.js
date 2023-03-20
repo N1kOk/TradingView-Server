@@ -11,7 +11,7 @@ app.get('/get-indicator-graphic', async (req, res) => {
     const chart = new client.Session.Chart()
     chart.setMarket(currency, {
         timeframe,
-        range,
+        range: +range,
     })
     
     const indicator = await TradingView.getIndicator(indicatorId)
