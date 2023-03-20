@@ -14,9 +14,9 @@ app.get('/get-indicator-graphic', async (req, res) => {
         range,
     })
     
-    const indic = await TradingView.getIndicator(indicatorId)
+    const indicator = await TradingView.getIndicator(indicatorId)
     
-    const STD = new chart.Study(indic)
+    const STD = new chart.Study(indicator)
     
     STD.onError((...err) => {
         console.error('Study error:', ...err)
