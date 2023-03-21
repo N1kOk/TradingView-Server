@@ -35,6 +35,8 @@ app.get('/get-indicator-graphic', async (req, res) => {
     
     STD.onUpdate(() => {
         console.log('Graphic data:', STD.graphic)
+        console.log('Raw data:', STD.graphic.raw())
+        
         res.json(STD.graphic)
         
         client.end()
