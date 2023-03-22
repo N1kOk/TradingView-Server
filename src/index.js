@@ -7,17 +7,20 @@ app.get('/get-indicator-graphic', async (req, res) => {
     const { sessionId, indicatorId, currency, timeframe, range } = req.query
     
     const client = new TradingView.Client({
-        token: sessionId
+        token: sessionId,
     })
     
     const chart = new client.Session.Chart()
     chart.setMarket(currency, {
-        type: 'HeikinAshi',
         timeframe,
         range: +range,
     })
     
     const indicator = await TradingView.getIndicator(indicatorId)
+    
+    indicator.setOption('Show_WT_Hidden_Divergences', true)
+    indicator.setOption('Show_Stoch_Regular_Divergences', true)
+    indicator.setOption('Show_Stoch_Hidden_Divergences', true)
     
     const STD = new chart.Study(indicator)
     
@@ -37,11 +40,14 @@ app.get('/get-indicator-graphic', async (req, res) => {
     })
     
     STD.onUpdate(() => {
-        console.log('Graphic data:', STD.graphic)
-        console.log('Raw data:', STD.graphic.raw())
+        // console.log('Graphic data:', STD.graphic)
+        // console.log('Raw data:', STD.graphic.raw())
+       
+        console.log('Periods: ', STD.periods)
+    
+        res.json(STD.periods)
         
-        res.json(STD.graphic)
-        
+        STD.remove()
         client.end()
     })
 })
