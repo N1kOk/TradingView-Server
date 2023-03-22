@@ -20,6 +20,8 @@ app.get('/get-indicator-graphic', async (req, res) => {
     
     const STD = new chart.Study(indicator)
     
+    STD.setIndicator(indicator)
+    
     STD.onError((...err) => {
         console.error('Study error:', ...err)
         
@@ -36,6 +38,8 @@ app.get('/get-indicator-graphic', async (req, res) => {
     STD.onUpdate(() => {
         console.log('Graphic data:', STD.graphic)
         console.log('Raw data:', STD.graphic.raw())
+        
+        STD.setIndicator()
         
         res.json(STD.graphic)
         
