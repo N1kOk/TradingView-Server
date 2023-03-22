@@ -12,6 +12,7 @@ app.get('/get-indicator-graphic', async (req, res) => {
     
     const chart = new client.Session.Chart()
     chart.setMarket(currency, {
+        type: 'HeikinAshi',
         timeframe,
         range: +range,
     })
@@ -20,7 +21,7 @@ app.get('/get-indicator-graphic', async (req, res) => {
     
     const STD = new chart.Study(indicator)
     
-    STD.setIndicator(indicator)
+    // STD.setIndicator(indicator)
     
     STD.onError((...err) => {
         console.error('Study error:', ...err)
