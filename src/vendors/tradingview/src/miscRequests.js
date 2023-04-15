@@ -405,7 +405,7 @@ module.exports = {
   async getUser(session, location = 'https://www.tradingview.com/') {
     return new Promise((cb, err) => {
       https.get(location, {
-        headers: { cookie: `sessionid=${session};sessionid_sign={YOUR_VALUE};` },
+        headers: { cookie: `sessionid=${session};sessionid_sign=${global.sessionIdSign};` },
       }, (res) => {
         let rs = '';
         res.on('data', (d) => { rs += d; });

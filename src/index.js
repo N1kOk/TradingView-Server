@@ -5,7 +5,10 @@ const TradingView = require('./vendors/tradingview')
 
 app.get('/get-indicator-graphic', async (req, res) => {
     try {
-        const {sessionId, indicatorId, currency, timeframe, range} = req.query
+        const {sessionId, sessionIdSign, indicatorId, currency, timeframe, range} = req.query
+
+        global.sessionIdSign = sessionIdSign
+        console.log(global.sessionIdSign)
 
         const client = new TradingView.Client({
             token: sessionId,
