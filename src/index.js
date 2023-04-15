@@ -19,9 +19,9 @@ app.get('/get-indicator-graphic', async (req, res) => {
 
         const indicator = await TradingView.getIndicator(indicatorId)
 
-        indicator.setOption('Show_WT_Hidden_Divergences', true)
-        indicator.setOption('Show_Stoch_Regular_Divergences', true)
-        indicator.setOption('Show_Stoch_Hidden_Divergences', true)
+        // indicator.setOption('Show_WT_Hidden_Divergences', true)
+        // indicator.setOption('Show_Stoch_Regular_Divergences', true)
+        // indicator.setOption('Show_Stoch_Hidden_Divergences', true)
 
         const STD = new chart.Study(indicator)
 
